@@ -1,0 +1,5 @@
+{
+    "url": "<URL of the SMS endpoint>",
+    "user": "<User ID>",
+    "password": "<User password>"
+}
