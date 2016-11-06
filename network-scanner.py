@@ -3,8 +3,12 @@
 import datetime
 import json
 import nmapclient
+import os
 import os.path
 import sms
+import sys
+
+os.chdir(sys.path[0])
 
 addresses = nmapclient.get_device_addresses();
 
