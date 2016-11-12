@@ -90,6 +90,7 @@ ENV/
 .ropeproject
 
 # Project specific files
-hosts.json
+last-connections.json
+music/*/
 nmap-output.xml
-sms.config
+users.config
