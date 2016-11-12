@@ -34,11 +34,7 @@ The entry music files should be organized as follows:
 |
 +--- music
 	|
-	+--- John-PC
-	|	|
-	|	+--- johns-entry-music.mp3
+	+--- johns-entry-music.mp3
 	|
-	+--- android-123467
-		|
-		+--- sarahs-entry-music.mp3
+	+--- sarahs-entry-music.mp3
 ```

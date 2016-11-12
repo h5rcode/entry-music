@@ -26,6 +26,7 @@ last_connections_file_name = "last-connections.json"
 
 now = datetime.datetime.now()
 last_connections = get_last_connections()
+
 hosts = nmapclient.get_hosts()
 users = user.User.load_users(users_file_name)
 
@@ -45,7 +46,7 @@ for user in users:
 
 		last_connection_date = None
 		if user.hostname in last_connections:
-			last_connection_date = datetime.datetime.strptime(last_connections[user.hostname], "%Y-%m-%dT%H:%M:%S.%f");
+			last_connection_date = datetime.datetime.strptime(last_connections[user.hostname], "%Y-%m-%dT%H:%M:%S.%f")
 
 		if last_connection_date == None:
 			should_play_music = True
@@ -55,10 +56,10 @@ for user in users:
 				should_play_music = True
 
 		if should_play_music:
-			file = "music/" + user.hostname + "/" + user.music
+			file = "music/" + user.music
 			omxplayerclient.play_sound(file)
 
-		last_connections[user.hostname] = now.isoformat();
+		last_connections[user.hostname] = now.isoformat()
 
 with open(last_connections_file_name, "w") as last_connections_file:
 	json.dump(last_connections, last_connections_file)

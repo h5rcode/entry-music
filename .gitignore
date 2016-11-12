@@ -91,6 +91,6 @@ ENV/
 
 # Project specific files
 last-connections.json
-music/*/
+music/*
 nmap-output.xml
 users.config
