@@ -1,4 +1,4 @@
-# network-scanner
+# entry-music
 
 A Python program that detects when specific hosts join the network for the first time or after being disconnected for more than 15 minutes and plays a configured entry music.
 
@@ -30,7 +30,7 @@ The entry music files should be organized as follows:
 ```
 .
 |
-+--- network-scanner.py
++--- entry-music.py
 |
 +--- music
 	|
