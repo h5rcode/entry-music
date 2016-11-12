@@ -30,6 +30,8 @@ The entry music files should be organized as follows:
 ```
 .
 |
++--- network-scanner.py
+|
 +--- music
 	|
 	+--- John-PC
