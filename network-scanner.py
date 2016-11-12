@@ -3,60 +3,62 @@
 import datetime
 import json
 import nmapclient
+import omxplayerclient
 import os
 import os.path
-import sms
 import sys
+import user
+
+def get_last_connections():
+	last_connections = None
+	if os.path.isfile(last_connections_file_name):
+        	with open(last_connections_file_name) as last_connections_file:
+                	last_connections = json.load(last_connections_file)
+	else:
+        	last_connections = {}
+	return last_connections
 
 os.chdir(sys.path[0])
 
-addresses = nmapclient.get_device_addresses();
+min_delta = datetime.timedelta(minutes = 15)
+users_file_name = "users.config";
+last_connections_file_name = "last-connections.json"
 
-minutes_since_last_connection = 15;
+now = datetime.datetime.now()
+last_connections = get_last_connections()
+hosts = nmapclient.get_hosts()
+users = user.User.load_users(users_file_name)
 
-hosts = None;
-if os.path.isfile("hosts.json"):
-	with open("hosts.json") as hosts_file:
-        	hosts = json.load(hosts_file);
-else:
-	hosts = [];
-
-new_hosts = [];
-current_hosts = hosts[:];
-now = datetime.datetime.now();
-min_delta = datetime.timedelta(minutes = minutes_since_last_connection);
-
-for address in addresses:
-	address_host = None;
-	play_song = False;
+for user in users:
+	user_address = user.address
 	for host in hosts:
-		host_address = host["address"]
-		if (host_address == address):
-			address_host = host;
-			break;
+		is_connected = False
+		for host_address in host.addresses:
+			if host_address.address == user_address:
+				is_connected = True
+				break
+		if is_connected:
+			break
 
-	if address_host == None:
-		play_song = True;
-		address_host = {
-			"address": address
-		};
-		current_hosts.append(address_host);
-	else:
-		last_seen = datetime.datetime.strptime(address_host["lastSeen"], "%Y-%m-%dT%H:%M:%S.%f");
-		delta = now - last_seen;
+	if is_connected:
+		should_play_music = False
 
-		if (delta >= min_delta):
-			play_song = True;
+		last_connection_date = None
+		if user.hostname in last_connections:
+			last_connection_date = datetime.datetime.strptime(last_connections[user.hostname], "%Y-%m-%dT%H:%M:%S.%f");
 
-	address_host["lastSeen"] = now.isoformat();
+		if last_connection_date == None:
+			should_play_music = True
+		else:
+			delta = now - last_connection_date
+			if delta >= min_delta:
+				should_play_music = True
 
-	if (play_song):
-		new_hosts.append(address_host["address"]);
-		print("Play a song for " + address_host["address"]);
+		if should_play_music:
+			file = "music/" + user.hostname + "/" + user.music
+			omxplayerclient.play_sound(file)
 
-with open("hosts.json", "w") as hosts_file:
-	json.dump(current_hosts, hosts_file);
+		last_connections[user.hostname] = now.isoformat();
 
-if (len(new_hosts) > 0):
-	message = "Addresses of the devices currently connected to the network:\n{0}".format("\n".join(new_hosts));
-	sms.send_message(message);
+with open(last_connections_file_name, "w") as last_connections_file:
+	json.dump(last_connections, last_connections_file)
