@@ -3,9 +3,9 @@
 import datetime
 import json
 import nmapclient
+import omxplayerclient
 import os
 import os.path
-import sms
 import sys
 
 os.chdir(sys.path[0])
@@ -52,11 +52,7 @@ for address in addresses:
 
 	if (play_song):
 		new_hosts.append(address_host["address"]);
-		print("Play a song for " + address_host["address"]);
+		omxplayerclient.play_sound("music/example.mp3");
 
 with open("hosts.json", "w") as hosts_file:
 	json.dump(current_hosts, hosts_file);
-
-if (len(new_hosts) > 0):
-	message = "Addresses of the devices currently connected to the network:\n{0}".format("\n".join(new_hosts));
-	sms.send_message(message);
